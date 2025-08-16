@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Usuarios - Junta de Saneamiento</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .buscador {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 8px;
+      width: 300px;
+      margin-right: 10px;
+    }
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .contenedor {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .card h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+    .card p {
+      margin: 5px 0;
+    }
+    .badge {
+      display: inline-block;
+      background: #27ae60;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin: 2px;
+    }
+    .pendiente {
+      background: #c0392b;
+    }
+    .seccion {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Consulta de Usuarios</h1>
+  <div class="buscador">
+    <input type="text" id="buscar" placeholder="Ingrese nombre, cédula o lote...">
+    <button onclick="buscarUsuario()">Buscar</button>
+  </div>
+  <div id="resultados" class="contenedor"></div>
+
+  <script>
+    let usuarios2024 = [];
+    let usuarios2025 = [];
+
+    // Cargar los dos JSON
+    Promise.all([
+      fetch("PAGOS_2024.json").then(res => res.json()),
+      fetch("PAGOS_2025.json").then(res => res.json())
+    ]).then(([data2024, data2025]) => {
+      usuarios2024 = data2024;
+      usuarios2025 = data2025;
+    });
+
+    function buscarUsuario() {
+      const query = document.getElementById("buscar").value.toLowerCase();
+      const resultados2024 = usuarios2024.filter(u =>
+        Object.values(u).some(val => String(val).toLowerCase().includes(query))
+      );
+      const resultados2025 = usuarios2025.filter(u =>
+        Object.values(u).some(val => String(val).toLowerCase().includes(query))
+      );
+
+      const contenedor = document.getElementById("resultados");
+      contenedor.innerHTML = "";
+
+      mostrarResultados(resultados2024, 2024, contenedor);
+      mostrarResultados(resultados2025, 2025, contenedor);
+    }
+
+    function mostrarResultados(lista, anio, contenedor) {
+      lista.forEach(u => {
+        const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SETIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+        let badges = "";
+        meses.forEach(m => {
+          if (u[m]) {
+            badges += `<span class="badge">${m}: ${u[m]}</span>`;
+          } else {
+            badges += `<span class="badge pendiente">${m}: -</span>`;
+          }
+        });
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h2>Año ${anio}</h2>
+          <p><strong>Nº:</strong> ${u["Nº"] || "-"}</p>
+          <p><strong>Cédula:</strong> ${u["Cédula de Identidad:"] || "-"}</p>
+          <p><strong>Nombre y Apellido:</strong> ${u["Nombres y Apellidos:"] || "-"}</p>
+          <p><strong>Manzana:</strong> ${u["Manzana"] || "-"}</p>
+          <p><strong>Nº de Lote:</strong> ${u["Lote"] || "-"}</p>
+
+          <div class="seccion">
+            <p><strong>Total a Pagar:</strong> ${u["TOTAL A PAGAR"] || "-"}</p>
+            <p><strong>Pagado:</strong> ${u["PAGADO"] || "-"}</p>
+            <p><strong>Saldo:</strong> ${u["SALDO A PAGAR"] || "-"}</p>
+            <p><strong>Observación:</strong> ${u["Observación"] || "-"}</p>
+          </div>
+
+          <div class="seccion">
+            <p><strong>Meses:</strong></p>
+            <div>${badges}</div>
+          </div>
+        `;
+        contenedor.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
+
