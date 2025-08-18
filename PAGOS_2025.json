@@ -5178,9 +5178,9 @@
         "OCTUBRE":null,
         "NOVIEMBRE":null,
         "DICIEMBRE":null,
-        "TOTAL A PAGAR":0,
+        "TOTAL A PAGAR":60000,
         "PAGADO":0,
-        "SALDO A PAGAR":0,
+        "SALDO A PAGAR":60000,
         "Observación":null
     },
     {
