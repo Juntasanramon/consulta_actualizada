@@ -5161,8 +5161,8 @@
     },
     {
         "Nº":227,
-        "Cédula de Identidad:":0,
-        "Nombres y Apellidos:":"Aurelia Duarte",
+        "Cédula de Identidad:":7042191,
+        "Nombres y Apellidos:":"Jazmin Rocio Gimenez Cardozo",
         "Manzana":15,
         "Nº de Lote":6,
         "Nº de casa ":"V59",
@@ -5173,7 +5173,7 @@
         "MAYO":"Sin concexion ",
         "JUNIO":"Sin concexion ",
         "JULIO":"Sin concexion ",
-        "AGOSTO":"Sin concexion ",
+        "AGOSTO":"Nueva concexion ",
         "SETIEMBRE":null,
         "OCTUBRE":null,
         "NOVIEMBRE":null,
@@ -5181,7 +5181,7 @@
         "TOTAL A PAGAR":0,
         "PAGADO":0,
         "SALDO A PAGAR":0,
-        "Observación":"Corte de servicio en proceso (Favor Comunicarse al +595981860018)"
+        "Observación":null
     },
     {
         "Nº":229,
