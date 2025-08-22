@@ -156,6 +156,7 @@
         Object.values(u).some(val => String(val).toLowerCase().includes(query))
       );
 
+      document.getElementById("resultados").innerHTML = "";
       mostrarResultados(resultados2024, 2024);
       mostrarResultados(resultados2025, 2025);
     }
@@ -204,3 +205,4 @@
   </script>
 </body>
 </html>
+
