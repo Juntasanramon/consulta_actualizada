@@ -155,7 +155,9 @@
       const resultados2025 = usuarios2025.filter(u =>
         Object.values(u).some(val => String(val).toLowerCase().includes(query))
       );
-      mostrarResultados([...resultados2024, ...resultados2025]);
+
+      mostrarResultados(resultados2024, 2024);
+      mostrarResultados(resultados2025, 2025);
     }
 
     function limpiarBusqueda() {
@@ -163,9 +165,8 @@
       document.getElementById("resultados").innerHTML = "";
     }
 
-    function mostrarResultados(lista) {
+    function mostrarResultados(lista, anio) {
       const contenedor = document.getElementById("resultados");
-      contenedor.innerHTML = "";
       const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SETIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
 
       lista.forEach(u => {
@@ -182,7 +183,8 @@
         card.className = "card";
         card.innerHTML = `
           <h2>${u["Nombres y Apellidos:"] || "-"} (${u["Cédula de Identidad:"] || "-"})</h2>
-          <p><strong>Año:</strong> ${u["TOTAL A PAGAR"] ? "2025" : "2024"}</p>
+          <p><strong>Año:</strong> ${anio}</p>
+          <p><strong>Nº:</strong> ${u["Nº"] || "-"}</p>
           <p><strong>Manzana:</strong> ${u["Manzana"] || "-"}</p>
           <p><strong>Lote:</strong> ${u["Lote"] || "-"}</p>
           <div class="seccion">
@@ -202,4 +204,3 @@
   </script>
 </body>
 </html>
-
