@@ -2,79 +2,143 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta de Usuarios - Junta de Saneamiento</title>
+  <!-- Fuente moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f5f5f5;
-    }
-    h1 {
-      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f5f7fa;
       color: #2c3e50;
     }
+
+    header {
+      background: linear-gradient(90deg, #3498db, #2ecc71);
+      padding: 15px 0;
+      text-align: center;
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
     .buscador {
       text-align: center;
-      margin-bottom: 20px;
+      margin: 20px auto;
     }
-    input {
-      padding: 8px;
+
+    .buscador input {
+      padding: 10px;
       width: 300px;
-      margin-right: 10px;
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+      transition: all 0.3s ease;
     }
-    button {
-      padding: 8px 12px;
+    .buscador input:focus {
+      border-color: #2ecc71;
+      box-shadow: 0 0 5px rgba(46, 204, 113, 0.6);
+    }
+
+    .buscador button {
+      padding: 10px 15px;
+      margin-left: 10px;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
     }
+    .buscador button:hover {
+      background: #2ecc71;
+      transform: scale(1.05);
+    }
+
     .contenedor {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 20px;
+      padding: 20px;
     }
+
     .card {
       background: white;
       padding: 15px;
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.5s forwards;
     }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
     .card h2 {
       margin: 0;
       font-size: 18px;
-      color: #2c3e50;
+      color: #3498db;
     }
-    .card p {
-      margin: 5px 0;
-    }
+
     .badge {
       display: inline-block;
-      background: #27ae60;
+      background: #2ecc71;
       color: white;
-      padding: 3px 8px;
+      padding: 4px 8px;
       border-radius: 8px;
       font-size: 12px;
       margin: 2px;
     }
+
     .pendiente {
-      background: #c0392b;
+      background: #e74c3c;
     }
+
     .seccion {
       margin-top: 10px;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media(max-width: 600px) {
+      .buscador input {
+        width: 80%;
+        margin-bottom: 10px;
+      }
+      .buscador button {
+        width: 50%;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Consulta de Usuarios Junta San Ramón</h1>
+  <header><i class="fa-solid fa-faucet-drip"></i> Consulta de Usuarios - Junta San Ramón</header>
+  
   <div class="buscador">
-    <input type="text" id="buscar" placeholder="Ingrese nombre, cédula o lote...">
-    <button onclick="buscarUsuario()">Buscar</button>
+    <input type="text" id="buscar" placeholder="Ingrese nombre, cédula o lote..." oninput="buscarUsuario()">
+    <button onclick="buscarUsuario()"><i class="fa fa-search"></i> Buscar</button>
+    <button onclick="limpiarBusqueda()"><i class="fa fa-eraser"></i> Limpiar</button>
   </div>
+
   <div id="resultados" class="contenedor"></div>
 
   <script>
     let usuarios2024 = [];
     let usuarios2025 = [];
 
-    // Cargar los dos JSON
     Promise.all([
       fetch("PAGOS_2024.json").then(res => res.json()),
       fetch("PAGOS_2025.json").then(res => res.json())
@@ -91,43 +155,42 @@
       const resultados2025 = usuarios2025.filter(u =>
         Object.values(u).some(val => String(val).toLowerCase().includes(query))
       );
-
-      const contenedor = document.getElementById("resultados");
-      contenedor.innerHTML = "";
-
-      mostrarResultados(resultados2024, 2024, contenedor);
-      mostrarResultados(resultados2025, 2025, contenedor);
+      mostrarResultados([...resultados2024, ...resultados2025]);
     }
 
-    function mostrarResultados(lista, anio, contenedor) {
+    function limpiarBusqueda() {
+      document.getElementById("buscar").value = "";
+      document.getElementById("resultados").innerHTML = "";
+    }
+
+    function mostrarResultados(lista) {
+      const contenedor = document.getElementById("resultados");
+      contenedor.innerHTML = "";
+      const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SETIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+
       lista.forEach(u => {
-        const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SETIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
         let badges = "";
         meses.forEach(m => {
           if (u[m]) {
-            badges += `<span class="badge">${m}: ${u[m]}</span>`;
+            badges += `<span class="badge"><i class="fa fa-check"></i> ${m}</span>`;
           } else {
-            badges += `<span class="badge pendiente">${m}: -</span>`;
+            badges += `<span class="badge pendiente"><i class="fa fa-times"></i> ${m}</span>`;
           }
         });
 
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-          <h2>Año ${anio}</h2>
-          <p><strong>Nº:</strong> ${u["Nº"] || "-"}</p>
-          <p><strong>Cédula:</strong> ${u["Cédula de Identidad:"] || "-"}</p>
-          <p><strong>Nombre y Apellido:</strong> ${u["Nombres y Apellidos:"] || "-"}</p>
+          <h2>${u["Nombres y Apellidos:"] || "-"} (${u["Cédula de Identidad:"] || "-"})</h2>
+          <p><strong>Año:</strong> ${u["TOTAL A PAGAR"] ? "2025" : "2024"}</p>
           <p><strong>Manzana:</strong> ${u["Manzana"] || "-"}</p>
-          <p><strong>Nº de Lote:</strong> ${u["Lote"] || "-"}</p>
-
+          <p><strong>Lote:</strong> ${u["Lote"] || "-"}</p>
           <div class="seccion">
             <p><strong>Total a Pagar:</strong> ${u["TOTAL A PAGAR"] || "-"}</p>
             <p><strong>Pagado:</strong> ${u["PAGADO"] || "-"}</p>
             <p><strong>Saldo:</strong> ${u["SALDO A PAGAR"] || "-"}</p>
             <p><strong>Observación:</strong> ${u["Observación"] || "-"}</p>
           </div>
-
           <div class="seccion">
             <p><strong>Meses:</strong></p>
             <div>${badges}</div>
