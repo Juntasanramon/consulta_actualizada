@@ -15,7 +15,6 @@
       background: #f5f7fa;
       color: #2c3e50;
     }
-
     header {
       background: linear-gradient(90deg, #3498db, #2ecc71);
       padding: 15px 0;
@@ -25,12 +24,10 @@
       font-weight: 600;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-
     .buscador {
       text-align: center;
       margin: 20px auto;
     }
-
     .buscador input {
       padding: 10px;
       width: 300px;
@@ -44,7 +41,6 @@
       border-color: #2ecc71;
       box-shadow: 0 0 5px rgba(46, 204, 113, 0.6);
     }
-
     .buscador button {
       padding: 10px 15px;
       margin-left: 10px;
@@ -60,14 +56,12 @@
       background: #2ecc71;
       transform: scale(1.05);
     }
-
     .contenedor {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 20px;
       padding: 20px;
     }
-
     .card {
       background: white;
       padding: 15px;
@@ -78,18 +72,15 @@
       transform: translateY(10px);
       animation: fadeIn 0.5s forwards;
     }
-
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-
     .card h2 {
       margin: 0;
       font-size: 18px;
       color: #3498db;
     }
-
     .badge {
       display: inline-block;
       background: #2ecc71;
@@ -99,28 +90,33 @@
       font-size: 12px;
       margin: 2px;
     }
-
     .pendiente {
       background: #e74c3c;
     }
-
-    .seccion {
-      margin-top: 10px;
+    /* Badge de estado */
+    .estado {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 5px;
     }
-
+    .estado.conectado {
+      background: #27ae60;
+      color: white;
+    }
+    .estado.desconectado {
+      background: #7f8c8d;
+      color: white;
+    }
+    .seccion { margin-top: 10px; }
     @keyframes fadeIn {
       to { opacity: 1; transform: translateY(0); }
     }
-
-    /* Responsive */
     @media(max-width: 600px) {
-      .buscador input {
-        width: 80%;
-        margin-bottom: 10px;
-      }
-      .buscador button {
-        width: 50%;
-      }
+      .buscador input { width: 80%; margin-bottom: 10px; }
+      .buscador button { width: 50%; }
     }
   </style>
 </head>
@@ -180,10 +176,21 @@
           }
         });
 
+        // Mostrar estado SOLO si está explícitamente en el JSON
+        let estadoBadge = "";
+        if (typeof u["Estado"] === "string") {
+          const estado = u["Estado"].trim().toLowerCase();
+          if (estado === "recien conectado") {
+            estadoBadge = `<span class="estado conectado">Recien conectado</span>`;
+          } else if (estado === "sin conexion" || estado === "sin conexión") {
+            estadoBadge = `<span class="estado desconectado">Sin conexión</span>`;
+          }
+        }
+
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-          <h2>${u["Nombres y Apellidos:"] || "-"} (${u["Cédula de Identidad:"] || "-"})</h2>
+          <h2>${u["Nombres y Apellidos:"] || "-"} (${u["Cédula de Identidad:"] || "-"}) ${estadoBadge}</h2>
           <p><strong>Año:</strong> ${anio}</p>
           <p><strong>Nº:</strong> ${u["Nº"] || "-"}</p>
           <p><strong>Manzana:</strong> ${u["Manzana"] || "-"}</p>
@@ -205,4 +212,3 @@
   </script>
 </body>
 </html>
-
